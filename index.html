@@ -1,1 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Yeeps PvP List</title>
+<link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+<meta name="description" content="The Yeeps PvP lists" />
+<style>
+:root{
+  --bg:#0b0b0d;
+  --panel:#0f1720;
+  --muted:#94a3b8;
+  --accent:#ff004f;
+  --accent-2:#f72a79;
+  --card:#0b1320;
+  --glass: rgba(255,255,255,0.03);
+  --radius:12px;
+  --shadow: 0 6px 18px rgba(2,6,23,0.6);
+  --maxw:1200px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;
+}
 
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background: linear-gradient(165deg,var(--bg) 0%, #960330 100%);
+  color:#e6eef6;
+  padding:28px 20px;
+  display:flex;
+  justify-content:center;
+}
+
+.wrap{
+  width:100%;
+  max-width:var(--maxw);
+  display:grid;
+  grid-template-columns:1fr;
+  gap:20px;
+}
+
+
+.sidebar{
+  background:linear-gradient(165deg,var(--panel), #960330);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+  position:fixed;
+  top:0;
+  left:0;
+  height:100vh;
+  width:320px;
+  transform:translateX(-100%);
+  transition:transform 0.55s ease;
+  z-index:50;
+  overflow:auto;
+}
+
+.sidebar.open{transform:translateX(0);}
+.wrap.menu-open .main{margin-left:320px; transition:margin 0.35s ease;}
+@media(max-width:980px){.wrap.menu-open .main{margin-left:0;}}
+
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:14px;}
+.logo{width:56px;height:56px;border-radius:10px;object-fit:cover;}
+nav.category-list button{
+  width:100%; display:flex; align-items:center; gap:10px; padding:10px;
+  border-radius:10px; border:none; background:transparent; color:inherit; cursor:pointer;
+}
+nav.category-list button.active{background:var(--glass);}
+nav.category-list img{width:36px;height:36px;border-radius:6px;}
+
+.main-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.controls{display:flex;gap:10px;}
+.search{background:linear-gradient(-165deg,var(--panel), #960330);border-radius:10px;padding:8px 12px;}
+.search input{background:transparent;border:0;color:inherit;outline:none;}
+.btn{
+  background:linear-gradient(165deg,var(--accent),var(--bg));
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  color:#ffffff;              
+}
+    
+.btn img{
+  width:10px;
+  height:10px;
+  border-radius:6px;
+  object-fit:cover;
+  z-index:1;
+}
+
+.btn:visited,
+.btn:hover,
+.btn:active{
+  color:#ffffff;              
+  text-decoration:none;
+}
+.muted-btn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.05);
+  padding:8px 12px;
+  border-radius:10px;
+  color:var(--muted);
+  cursor:pointer;
+}
+
+
+.grid{
+  display:flex; 
+  flex-direction:column;
+  gap:14px;
+}
+
+.card{
+  display:flex;
+  flex-direction:column;
+  background: linear-gradient(165deg, rgba(20,20,20,0.70), rgba(0,0,0,0.60));
+  border-radius:14px;
+  padding:16px;
+  box-shadow: var(--shadow);
+  cursor:pointer;
+  position:relative;
+  overflow:visible;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.9);}
+
+.player-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.player-avatar{width:56px;height:56px;border-radius:12px;background-size:cover;background-position:center;flex-shrink:0;}
+.player-info{display:flex;flex-direction:column;gap:4px;}
+.player-name{font-size:16px;font-weight:700;}
+.player-rank{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:var(--accent-2);}
+.player-rank img{width:18px;height:18px;}
+.player-score{font-size:14px;font-weight:800;color:#fff;}
+
+
+.categories-row{
+  display:flex;
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  gap:6px;
+}
+.categories-row img{
+  width:40px;
+  height:40px;
+  border-radius:6px;
+  object-fit:cover;
+  z-index:1;
+  background: linear-gradient(180deg, transparent, transparent,#960330);
+}
+
+    #rankPopup{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:linear-gradient(165deg,var(--panel), #960330);
+  border-radius:12px;
+  padding:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.7);
+  display:none;
+  flex-direction:column;
+  gap:8px;
+  z-index:200;
+  min-width:220px;
+}
+
+#rankPopup .row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:600;
+}
+
+#rankPopup img{
+  width:20px;
+  height:20px;
+}
+.cat-tooltip{
+  position:relative;
+  display:inline-flex;
+}
+
+.cat-tooltip-text{
+  position:absolute;
+  bottom:120%;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(10,10,14,0.95);
+  color:#fff;
+  padding:5px 7px;
+  border-radius:6px;
+  font-size:11px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.15s ease, transform 0.15s ease;
+  box-shadow:0 6px 16px rgba(0,0,0,0.6);
+  z-index:200;
+}
+
+.cat-tooltip:hover .cat-tooltip-text{
+  opacity:1;
+  transform:translateX(-50%) translateY(-4px);
+}
+
+    .player-team{
+  font-size:13px;
+  color:var(--accent);
+  margin-top:2px;
+}
+.player-rank-number {
+  font-size: 20px;
+  font-weight: 900;
+  min-width: 40px;
+  text-align: center;
+  color: var(--accent);
+}
+
+
+
+.modal{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:100;
+}
+.modal.active{display:flex;}
+.modal-card{
+  background: linear-gradient(-160deg, var(--panel), #960330);
+  border-radius:var(--radius);
+  padding:20px;
+  width:360px;
+  max-width:90%;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  position:relative;
+}
+.modal-card img{width:56px;height:56px;border-radius:12px;object-fit:cover;}
+.modal-close{
+  position:absolute; top:12px; right:12px;
+  background:transparent; border:none; font-size:20px; cursor:pointer; color:#fff;
+}
+.modal-name{font-size:18px;font-weight:700;}
+.modal-rank{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--accent);}
+.modal-score{font-weight:600;}
+.modal-cats{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.modal-cats img{width:36px;height:36px;border-radius:6px;object-fit:cover;background: linear-gradient(180deg, transparent, #960330);}
+.modal-team{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.04);
+  font-size:14px;
+  font-weight:700;
+  color:var(--accent);
+}
+    .rank-gold {
+  color: #FFD700;
+  text-shadow: 0 0 8px #FFD700;
+}
+
+.rank-silver {
+  color: #C0C0C0;
+  text-shadow: 0 0 8px #C0C0C0;
+}
+
+.rank-bronze {
+  color: #CD7F32;
+  text-shadow: 0 0 8px #CD7F32;
+}
+footer{text-align:center;margin-top:22px;color:var(--muted);}
+</style>
+</head>
+
+
+
+<body>
+<div class="rank-popup" id="rankPopup"></div>
+<div class="wrap">
+
+  
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="https://yeeplist.page.gd/images/PvP_Rank.jpeg" class="logo">
+      <div>
+        <h1>The Yeeps List</h1>
+        <p style="color:var(--muted);font-size:12px;">PvP leaderboards</p>
+      </div>
+    </div>
+
+    <nav class="category-list">
+      <button class="active" data-cat="all"><img src="https://yeeplist.page.gd/images/PvP_Rank.jpeg" alt="" />All Rankings</button>
+      <button data-cat="bat"><img src="https://yeeplist.page.gd/images/placeholder.png" alt="" />Bat PvP</button>
+      <button data-cat="dagger"><img src="https://yeeplist.page.gd/images/PvP_Rank.jpeg" alt="" />Dagger PvP</button>
+      <button data-cat="glove"><img src="https://yeeplist.page.gd/images/Freeze_Glove.png" alt="" />Freeze Glove PvP</button>
+      <button data-cat="mace"><img src="https://yeeplist.page.gd/images/SwarmSlayer.jpg" alt="" />Mace PvP</button>
+      <button data-cat="shield"><img src="https://yeeplist.page.gd/images/placeholder.png" alt="" />Shield PvP</button>
+      <button data-cat="fire"><img src="https://yeeplist.page.gd/images/Desert.png" alt="" />Fire Axe PvP</button>
+      <button data-cat="scythe"><img src="https://yeeplist.page.gd/images/Horror.jpg" alt="" />Scythe PvP</button>
+	  <button data-cat="Baseball"><img src="https://yeeplist.page.gd/images/placeholder.png" alt="" />Baseball PvP</button>
+      <button data-cat="other"><img src="https://yeeplist.page.gd/images/placeholder.png" alt="" />Other PvP</button>
+      <button class="external-link-btn">Other Websites (for pvp)</button>
+      <button class="external-link-btn"
+        onclick="window.open('teams.html','_blank')"><img src="https://yeeplist.page.gd/images/placeholder.png">
+  Team Rankings
+</button>
+      <button class="external-link-btn"
+        onclick="window.open('Card.html','_blank')"><img src="https://yeeplist.page.gd/images/placeholder.png">
+  Player Cards
+</button>
+              <button class="external-link-btn"
+        onclick="window.open('ltm.html','_blank')"><img src="https://yeeplist.page.gd/images/favicon_ltm.png">
+  LTM's
+</button>
+      <button class="external-link-btn">Other Stuff</button>
+      <button data-cat="credits"><img src="https://yeeplist.page.gd/images/credits.png" alt="" />Credits And Testers</button>
+      <button class="external-link-btn"></button>
+      <button data-cat="discord" onclick="window.open('https://discord.gg/7mry9QQCGH','_blank')"><img src="https://yeeplist.page.gd/images/Discord.jpeg" alt="" />Join Our Discord</button>
+    </nav>
+  </aside>
+
+  
+  <section class="main">
+
+    <header class="main-head">
+      <div style="display:flex;gap:12px;align-items:center;">
+        <button class="muted-btn" id="menuToggle">☰ Menu</button>
+        <div>
+          <h2>Combat Leaderboard</h2>
+          <p style="color:var(--muted);font-size:13px;">The Yeeps Lists</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search">
+          <input id="search" placeholder="Search player...">
+        </div>
+		<button class="btn" id="yeeplistBtn"><img src="https://yeeplist.page.gd/images/Info.png" alt="" /> Info</button>
+      </div>
+    </header>
+
+    <div class="grid" id="leaderboard"></div>
+
+    <footer>The Yeeps List (we are not affiliated with Trass Games)</footer>
+      <footer>V1.53</footer>
+  </section>
+</div>
+
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()"></button>
+    <img id="modalAvatar" src="" />
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-team" id="modalTeam"></div>
+    <div class="modal-rank"><img id="modalRankImg" src="" /> <span id="modalRank"></span></div>
+    <div class="modal-score" id="modalScore"></div>
+    <div class="modal-cats" id="modalCats"></div>
+  </div>
+</div>
+<script type="module">
+import { players } from "./Players.js";
+
+
+const leaderboard = document.getElementById("leaderboard");
+const searchInput = document.getElementById("search");
+const sidebar = document.querySelector(".sidebar");
+const wrap = document.querySelector(".wrap");
+const modal = document.getElementById("modal");
+const menuToggle = document.getElementById("menuToggle");
+const yeepsBtn = document.getElementById("yeeplistBtn");
+const rankPopup = document.getElementById("rankPopup");
+
+
+let activeCategory = null;
+
+
+const yeepsRanks = [
+  { img:"https://yeeplist.page.gd/images/Newb.png", label:"Newb Yeep (0–25)" },
+  { img:"https://yeeplist.page.gd/images/Street.png", label:"Street Yeep (25–50)" },
+  { img:"https://yeeplist.page.gd/images/Battle.png", label:"Battle Yeep (50–100)" },
+  { img:"https://yeeplist.page.gd/images/Master.png", label:"Master Yeep (100–150)" },
+  { img:"https://yeeplist.page.gd/images/Elite.png", label:"Elite Yeep (150–200)" },
+  { img:"https://yeeplist.page.gd/images/War.png", label:"War Yeep (200–300)" },
+  { img:"https://yeeplist.page.gd/images/Mythic.png", label:"Mythic Yeep (300–400)" },
+  { img:"https://yeeplist.page.gd/images/Divine.png", label:"Divine Yeep (400+)" }
+];
+
+const categoryMap = {
+  all: null,
+  bat: "Bat PvP",
+  dagger: "Dagger PvP",
+  glove: "Freeze Glove PvP",
+  mace: "Mace PvP",
+  shield: "Shield + Weapon PvP",
+  fire: "Fire Axe PvP",
+  scythe: "Scythe PvP",
+  other: "Other PvP",
+  credits: "Credits And Testers"
+};
+
+
+function getTier(player, catName) {
+  const cat = player.categories.find(c =>
+    c.cat.toLowerCase().includes(catName.toLowerCase())
+  );
+  if (!cat || !cat.pos) return Number.MAX_SAFE_INTEGER;
+  const match = cat.pos.match(/tier\s*([0-9]+)/i);
+  return match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
+}
+
+function assignRanks(list, valueFn) {
+  let lastVal = null;
+  let rank = 0;
+  let index = 0;
+
+  return list.map(p => {
+    const val = valueFn(p);
+    if (val !== lastVal) rank = index + 1;
+    lastVal = val;
+    index++;
+    return { ...p, globalRank: rank };
+  });
+}
+
+
+function renderList(list) {
+  leaderboard.innerHTML = "";
+
+  list.forEach(p => {
+    let rankClass = "";
+    if (p.globalRank === 1) rankClass = "rank-gold";
+    else if (p.globalRank === 2) rankClass = "rank-silver";
+    else if (p.globalRank === 3) rankClass = "rank-bronze";
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="player-top">
+        <div class="player-rank-number ${rankClass}">#${p.globalRank}</div>
+
+        <div class="player-avatar" style="background-image:url(${p.avatar})"></div>
+
+        <div class="player-info">
+          <div class="player-name">${p.name}</div>
+
+          <div class="player-rank">
+            <img src=${p.rank}>
+            ${p.title}
+          </div>
+
+          <div class="player-score">Score: ${p.score}</div>
+
+          ${p.team ? `<div class="player-team">${p.team}</div>` : ""}
+        </div>
+      </div>
+
+      <div class="categories-row">
+        ${p.categories.map(c => `
+          <div class="cat-tooltip">
+            <img src=${c.img}>
+            <div class="cat-tooltip-text">
+              ${c.cat}${c.pos ? " • " + c.pos : ""}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    card.onclick = () => openModal(p);
+    leaderboard.appendChild(card);
+  });
+}
+
+function applyView() {
+  let list = [...players];
+  const q = searchInput.value.toLowerCase();
+
+
+  if (activeCategory !== null) {
+
+    list = list
+      .map(p => {
+        const cat = p.categories.find(c =>
+          c.cat.toLowerCase().includes(activeCategory.toLowerCase())
+        );
+
+        if (!cat) return null;
+
+        const match = cat.pos.match(/tier[^0-9]*([0-9]+)/i);
+        const tier = match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
+
+        return { ...p, __tier: tier };
+      })
+      .filter(Boolean);
+
+
+    list.sort((a, b) => {
+      if (a.__tier !== b.__tier) return a.__tier - b.__tier;
+      return b.score - a.score;
+    });
+
+
+    list = assignRanks(list, p => p.__tier);
+
+  } else {
+
+    list.sort((a, b) => b.score - a.score);
+    list = assignRanks(list, p => p.score);
+  }
+
+
+  if (q) {
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.title.toLowerCase().includes(q) ||
+      (p.team && p.team.toLowerCase().includes(q)) ||
+      p.categories.some(c =>
+        c.cat.toLowerCase().includes(q) ||
+        (c.pos && c.pos.toLowerCase().includes(q))
+      )
+    );
+  }
+
+  renderList(list);
+}
+
+function openModal(p) {
+  document.getElementById("modalAvatar").src = p.avatar;
+  document.getElementById("modalName").textContent = p.name;
+  document.getElementById("modalRankImg").src = p.rank;
+  document.getElementById("modalRank").textContent = p.title;
+  document.getElementById("modalScore").textContent = `Score: ${p.score}`;
+
+  document.getElementById("modalTeam").style.display = p.team ? "flex" : "none";
+  document.getElementById("modalTeam").textContent = p.team || "";
+
+  document.getElementById("modalCats").innerHTML =
+    p.categories.map(c => `
+      <div class="cat-tooltip">
+        <img src=${c.img}>
+        <div class="cat-tooltip-text">
+          ${c.cat}${c.pos ? " • " + c.pos : ""}
+        </div>
+      </div>
+    `).join("");
+
+  modal.classList.add("active");
+}
+
+function closeModal() {
+  modal.classList.remove("active");
+}
+
+
+modal.onclick = closeModal;
+document.querySelector(".modal-card").onclick = e => e.stopPropagation();
+
+menuToggle.onclick = e => {
+  e.stopPropagation();
+  sidebar.classList.toggle("open");
+  wrap.classList.toggle("menu-open");
+};
+
+document.querySelectorAll(".category-list button[data-cat]").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".category-list button")
+      .forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    activeCategory = categoryMap[btn.dataset.cat];
+    applyView();
+
+    sidebar.classList.remove("open");
+    wrap.classList.remove("menu-open");
+  };
+});
+
+searchInput.oninput = applyView;
+
+
+yeepsBtn.onclick = e => {
+  e.stopPropagation();
+  rankPopup.innerHTML = "";
+
+  yeepsRanks.forEach(r => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `<img src=${r.img}><span>${r.label}</span>`;
+    rankPopup.appendChild(row);
+  });
+
+  rankPopup.style.display =
+    rankPopup.style.display === "flex" ? "none" : "flex";
+};
+
+document.onclick = () => {
+  rankPopup.style.display = "none";
+  sidebar.classList.remove("open");
+  wrap.classList.remove("menu-open");
+};
+
+rankPopup.onclick = e => e.stopPropagation();
+
+
+applyView();
+</script>
+</body>
+</html>
