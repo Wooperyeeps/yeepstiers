@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>The Yeeps PvP List</title>
+<title>Yeeps Tiers</title>
 <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 <meta name="description" content="The Yeeps PvP lists" />
 <style>
@@ -11,8 +11,8 @@
   --bg:#0b0b0d;
   --panel:#0f1720;
   --muted:#94a3b8;
-  --accent:#ff004f;
-  --accent-2:#f72a79;
+  --accent:#576077;
+  --accent-2:#77797B;
   --card:#0b1320;
   --glass: rgba(255,255,255,0.03);
   --radius:12px;
@@ -24,7 +24,7 @@
 *{box-sizing:border-box;}
 body{
   margin:0;
-  background: linear-gradient(165deg,var(--bg) 0%, #960330 100%);
+  background: linear-gradient(165deg,var(--bg) 0%, #36394C 100%);
   color:#e6eef6;
   padding:28px 20px;
   display:flex;
@@ -71,7 +71,7 @@ nav.category-list img{width:36px;height:36px;border-radius:6px;}
 
 .main-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
 .controls{display:flex;gap:10px;}
-.search{background:linear-gradient(-165deg,var(--panel), #960330);border-radius:10px;padding:8px 12px;}
+.search{background:linear-gradient(-165deg,var(--panel), #36394C);border-radius:10px;padding:8px 12px;}
 .search input{background:transparent;border:0;color:inherit;outline:none;}
 .btn{
   background:linear-gradient(165deg,var(--accent),var(--bg));
@@ -150,7 +150,7 @@ nav.category-list img{width:36px;height:36px;border-radius:6px;}
   border-radius:6px;
   object-fit:cover;
   z-index:1;
-  background: linear-gradient(180deg, transparent, transparent,#960330);
+  background: linear-gradient(180deg, transparent, transparent,#36394C);
 }
 
     #rankPopup{
@@ -158,7 +158,7 @@ nav.category-list img{width:36px;height:36px;border-radius:6px;}
   top:50%;
   left:50%;
   transform:translate(-50%, -50%);
-  background:linear-gradient(165deg,var(--panel), #960330);
+  background:linear-gradient(165deg,var(--panel), #36394C);
   border-radius:12px;
   padding:14px;
   box-shadow:0 10px 30px rgba(0,0,0,0.7);
@@ -234,7 +234,7 @@ nav.category-list img{width:36px;height:36px;border-radius:6px;}
 }
 .modal.active{display:flex;}
 .modal-card{
-  background: linear-gradient(-160deg, var(--panel), #960330);
+  background: linear-gradient(-160deg, var(--panel), #36394C);
   border-radius:var(--radius);
   padding:20px;
   width:360px;
@@ -253,7 +253,7 @@ nav.category-list img{width:36px;height:36px;border-radius:6px;}
 .modal-rank{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--accent);}
 .modal-score{font-weight:600;}
 .modal-cats{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
-.modal-cats img{width:36px;height:36px;border-radius:6px;object-fit:cover;background: linear-gradient(180deg, transparent, #960330);}
+.modal-cats img{width:36px;height:36px;border-radius:6px;object-fit:cover;background: linear-gradient(180deg, transparent, #36394C);}
 .modal-team{
   display:flex;
   align-items:center;
@@ -294,7 +294,7 @@ footer{text-align:center;margin-top:22px;color:var(--muted);}
     <div class="brand">
       <img src="https://yeeplist.page.gd/images/PvP_Rank.jpeg" class="logo">
       <div>
-        <h1>The Yeeps List</h1>
+        <h1>Yeeps Tiers</h1>
         <p style="color:var(--muted);font-size:12px;">PvP leaderboards</p>
       </div>
     </div>
@@ -311,18 +311,8 @@ footer{text-align:center;margin-top:22px;color:var(--muted);}
 	  <button data-cat="Baseball"><img src="https://yeeplist.page.gd/images/placeholder.png" alt="" />Baseball PvP</button>
       <button data-cat="other"><img src="https://yeeplist.page.gd/images/placeholder.png" alt="" />Other PvP</button>
       <button class="external-link-btn">Other Websites (for pvp)</button>
-      <button class="external-link-btn"
-        onclick="window.open('teams.html','_blank')"><img src="https://yeeplist.page.gd/images/placeholder.png">
-  Team Rankings
-</button>
-      <button class="external-link-btn"
-        onclick="window.open('Card.html','_blank')"><img src="https://yeeplist.page.gd/images/placeholder.png">
-  Player Cards
-</button>
-              <button class="external-link-btn"
-        onclick="window.open('ltm.html','_blank')"><img src="https://yeeplist.page.gd/images/favicon_ltm.png">
-  LTM's
-</button>
+     
+     
       <button class="external-link-btn">Other Stuff</button>
       <button data-cat="credits"><img src="https://yeeplist.page.gd/images/credits.png" alt="" />Credits And Testers</button>
       <button class="external-link-btn"></button>
@@ -353,7 +343,7 @@ footer{text-align:center;margin-top:22px;color:var(--muted);}
     <div class="grid" id="leaderboard"></div>
 
     <footer>The Yeeps List (we are not affiliated with Trass Games)</footer>
-      <footer>V1.53</footer>
+      <footer>V1.0</footer>
   </section>
 </div>
 
