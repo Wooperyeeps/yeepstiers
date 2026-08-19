@@ -1,10 +1,10 @@
 export const players = [
   { 
     id:1, 
-    name:"TEST",
+    name:"",
     avatar:"", 
-    title:"gubbyyeep",
-    score:12+3+4, 
+    title:"",
+    score:, 
     rank:"",
     categories:[
       {cat:"Bat PvP", pos:"", img:""},
