@@ -1,11 +1,11 @@
 export const players = [
   { 
     id:1, 
-    name:"", test
+    name:"TEST",
     avatar:"", 
-    title:"", the gubby master
-    score:,12+2+3 
-    rank:"", gubby
+    title:"gubbyyeep",
+    score:12+3+4, 
+    rank:"",
     categories:[
       {cat:"Bat PvP", pos:"", img:""},
       {cat:"Dagger PvP", pos:"", img:"https://yeeplist.page.gd/images/Bat_Tier4.png"},
